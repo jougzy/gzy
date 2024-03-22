@@ -92,7 +92,7 @@ export default {
         top: '-1%',
     },
     xAxis: {
-        // show: false,  // 隐藏X轴
+        // show: false,  
         type: 'value',
         position: 'top',
         min: -200, // 设置 x 轴最小值为 -200
@@ -102,7 +102,7 @@ export default {
         }
     },
     yAxis: {
-      // show: false,  // 隐藏X轴
+      // show: false, 
         type: 'value', // 修改 y 轴类型为 value
         min: 0, // 设置 y 轴最小值为 0
         max: 1000, // 设置 y 轴最大值为 1000
@@ -114,7 +114,8 @@ export default {
     series: [{
         type: 'line', // 将图表类型改为折线图
         connectNulls: true, // 连接空值
-        data: [[200, 25], [80, 165], [110, 300], [-175, 440],[-165, 590],[-70, 760],[-200, 920],] // 修改数据格式为 [x, y]
+        data: [[200, 25], [80, 165], [110, 300], [-175, 440],[-165, 590],[-70, 760],[-200, 920],], // 修改数据格式为 [x, y]
+     
     }]
 };
 
@@ -122,11 +123,13 @@ chart1.setOption(option1);
 
 
 var option2 = {
+  // backgroundColor: 'rgba(220, 220, 220, 0.3)',
     grid: {
         top: '-1%',
     },
     xAxis: {
-        // show: false,  // 隐藏X轴
+      inverse: true, 
+        // show: false,  
         type: 'value',
         position: 'top',
         min: -200, // 设置 x 轴最小值为 -200
@@ -136,19 +139,21 @@ var option2 = {
         }
     },
     yAxis: {
-      // show: false,  // 隐藏X轴
+      // show: false,  
         type: 'value', // 修改 y 轴类型为 value
         min: 0, // 设置 y 轴最小值为 0
         max: 1000, // 设置 y 轴最大值为 1000
         axisLabel: {
             rotate: 90
         }
+        
       
     },
     series: [{
         type: 'line', // 将图表类型改为折线图
-        connectNulls: true, // 连接空值
-        data: [[-200, 0], [195, 155], [199, 320], [172, 440],[195, 590],[-140, 810],[-200, 940],] // 修改数据格式为 [x, y]
+        connectNulls: true, 
+        data: [[-200, 0], [195, 155], [199, 320], [172, 440],[195, 590],[-140, 810],[-200, 940],],
+      
     }]
 };
 
@@ -180,7 +185,7 @@ chart2.setOption(option2);
         if (kwOrPa == 'kw'){
           if (reaction == 'left')this.loadLeftBlock();
           else this.loadRightBlock();
-          this.replaceKeyWords(reaction);
+          this.replaceKeyWords();
         }
         else this.replaceSpecialWord(reaction);
       });
@@ -237,6 +242,19 @@ chart2.setOption(option2);
       });
       this.reWritecircle();
     },
+    getChildIndex(nowElement,cate) {
+      var index = -1; // 默认设置索引为-1，表示未找到
+      const parentElement = d3.select('.circles');
+      // 使用 each() 方法遍历父元素的所有子元素
+      parentElement. selectAll(".circle_"+ cate).each(function(d, i) {
+          console.log(d);
+          // 检查当前子元素是否等于目标子元素
+          if (nowElement.node() === this) {
+              index = i;
+          }
+      });
+      return index;
+    },
     reWritecircle() {
       const vm = this;
       // 重写圆圈逻辑
@@ -251,15 +269,21 @@ chart2.setOption(option2);
               const circleClass = d3.select(this).attr("class").split(" ")[0];
               if (circleClass === "circle_right") {
                   // 如果点击的是 right_circle，则连接所有 left_circle
-                  vm.connectCircles(".circle_left", this);
+                  d3.json('/comparison/data/relation.json').then(data => {
+                    const index = vm.getChildIndex(d3.select(this),'right')
+                    vm.connectCircles(".circle_left", this ,data['right'][index]);
+                  });
               } else {
                   // 如果点击的是 left_circle，则连接所有 right_circle
-                  vm.connectCircles(".circle_right", this);
+                  d3.json('/comparison/data/relation.json').then(data => {
+                    const index = vm.getChildIndex(d3.select(this),'left')
+                    vm.connectCircles(".circle_right", this ,data['left'][index]);
+                  });
               }
               d3.select(this).attr("fill", "lightcoral");
           });
     },
-    connectCircles(targetSelector, clickedCircle) {
+    connectCircles(targetSelector, clickedCircle ,relationArray) {
       // 连接圆圈逻辑
       const container = d3.select("#paintArea");
       const targetCircles = container.selectAll(targetSelector);
@@ -316,6 +340,32 @@ chart2.setOption(option2);
                       console.log("Animation complete!");
                   }
               });
+          svg.selectAll('.connecting-line')
+              .data(relationArray)
+              .on("mouseover", function(d,i) {
+                d3.select(this)
+                    .attr("stroke", "red")
+                    .attr("stroke-width", 2);
+                // 计算鼠标位置s
+                var mousePosition = d3.mouse(this);
+                var x = mousePosition[0] + 20;
+                var y = mousePosition[1] + 10;
+                svg.append("text")
+                    .attr("x", x + "px")
+                    .attr("y", y + "px")
+                    .attr("text-anchor", "start")
+                    .attr("alignment-baseline", "middle")
+                    .text((d * 100).toString().slice(0,5) + '%');
+              })
+              .on("mouseout", function() {
+                  d3.select(this)
+                      .attr("stroke", "black")
+                      .attr("stroke-width", 1);
+
+                  // 移除显示的文本
+                  svg.selectAll("text").remove();
+              });
+              
       });
     },
     replaceSpecialWord(reaction) {
@@ -334,36 +384,70 @@ chart2.setOption(option2);
                     var sta = row[2];
                     if (sta == '消极')sta = 'negative';
                     else sta = 'positive';
-                    text = text.replace(new RegExp(word, 'g'), '<span class="' + sta + '">' + word + '</span>');
+                    text = text.replace(new RegExp(word, 'g'), '<span class="' + sta + ' wordspan">' + word + '</span>');
                 });
                 block.html(text);
             });
           });
     },
-    replaceKeyWords(reaction) {
-      var blockTexts = d3.selectAll("." + reaction +"-block");
+    replaceKeyWords() {
+      var blockTexts = d3.selectAll(".block_text");
       blockTexts.each(function() {
         const block = d3.select(this);
-        d3.json('/comparison/data/topic.json').then(data => {
-            const left_blocks = data[reaction];
-            left_blocks.forEach(block_keywords => {
-                var text = block.text();
-                block_keywords.forEach(kw => {
-                  text = text.replace(new RegExp(kw, 'g'), '<span class="keyword">' + kw + '</span>');
-                });
-                block.html(text);
-            });
+        var text = block.text();
+        d3.json('/comparison/data/keywords.json').then(data => {
+            for(const key in data){
+              if (data.hasOwnProperty(key)) {
+                  const values = data[key];
+                  for (const value of values) {
+                    text = text.replace(new RegExp(value, 'g'), '<span class="' + key + ' wordspan">' + value + '</span>');
+                  }
+              }
+            }
+            block.html(text);
         });
       });
+
     }
   }
 };
 </script>
 <style>
-.keyword {
-  background-color: rgb(229, 19, 19);
-  color: white;
+.connecting-line:hover{
+  cursor: pointer;
   user-select: auto;
+}
+.wordspan {
+  user-select: auto;
+}
+.wordspan:hover {
+  cursor: pointer; /* 悬浮时的鼠标指针样式 */
+  background-color: steelblue;
+  color: #fff;
+}
+.KW_loacation {
+  text-decoration: red wavy underline 2px;
+}
+.KW_person {
+  text-decoration: double underline 3px;
+}
+.keywords {
+  text-decoration: rgb(206, 96, 0) wavy underline 1.5px;
+}
+.KW_time {
+  background-color: rgb(138, 48, 143);
+  color: white;
+  border-radius: 10%;
+}
+.positive {
+  background-color: rgba(255, 38, 0, 0.955);
+  color: white;
+  border-radius: 10%;
+}
+/*  */
+.negative {
+  background-color: rgb(31, 200, 130);
+  color: white;
   border-radius: 10%;
 }
 .block_text {
@@ -408,26 +492,6 @@ chart2.setOption(option2);
 }
 #lineSvg {
   overflow: visible; /* 允许超出边界 */
-}
-.positive {
-  background-color: rgb(255, 81, 0);
-  color: white;
-  user-select: auto;
-  border-radius: 10%;
-}
-/*  */
-.negative {
-  background-color: rgb(31, 200, 31);
-  color: white;
-  user-select: auto;
-  border-radius: 10%;
-}
-.block_text span:hover {
-  cursor: pointer; /* 悬浮时的鼠标指针样式 */
-  background-color: steelblue;
-}
-.connecting-line :hover{
-  stroke-width: 2px;
 }
 .circles {
   position: relative;

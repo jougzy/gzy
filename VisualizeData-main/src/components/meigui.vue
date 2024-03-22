@@ -32,13 +32,13 @@ export default {
             var myChart = echarts.init($("#char3")[0]);
 
             // 指定图表的配置项和数据
-            $.getJSON('/src/assets/json/mgt.json', function(data) {
+            $.getJSON('/src/assets/json/person.json', function(data) {
                 var tl = [];
                 var countries = data[year][month];
                 for (var country in countries) {
                     tl.push({
                         name: country,
-                        value: Math.log(countries[country])
+                        value: countries[country]
                     });
                 }
                 var option = {
@@ -94,7 +94,7 @@ export default {
          
            
            
-            color: ['#CC301A', '#F1DC13', '#05299B', '#4EAAC1', '#222423', '#D69143']
+            color: [ '#F1DC13', '#05299B','#5FA042', '#4EAAC1', '#DF9F3E','#CC301A' ,'#E64163','#365535']
 
 
 
