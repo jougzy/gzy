@@ -79,7 +79,8 @@ export default {
                                 itemStyle: {
                                     normal: {
                                         color: function(params) {
-                                            var colorList = ['#CC301A', '#F1DC13', '#05299B', '#4EAAC1', '#222423', '#D69143'].map(color => `${color}B3`);
+                                            var colorList =  [ '#F1DC13', '#05299B','#5FA042', '#4EAAC1', '#DF9F3E','#CC301A' ,'#E64163','#365535'];
+
                                             return colorList[params.dataIndex % colorList.length];
                                         }
                                     }

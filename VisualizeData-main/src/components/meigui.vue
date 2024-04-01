@@ -49,7 +49,7 @@ export default {
                         trigger: 'item',
                         formatter: function(params) {
                             // params.data.value 包含了对应数据项的原始值
-                            return `${params.name}: ${parseInt(Math.exp(params.data.value))} (${params.percent}%)`;
+                            return `${params.name}: ${params.data.value} (${params.percent}%)`;
                         },
                         z: 2,
                     },

@@ -76,7 +76,7 @@ function init() {
         if (timeDifference < 300 && clickCount === 1) {
             // 触发双击事件
             console.log('点击了路径:', path);
-            window.open('http://localhost:5173/area', '_blank');
+            document.getElementById('area_nav').click();
             clickCount = 0;
         } else {
             // 记录第一次点击

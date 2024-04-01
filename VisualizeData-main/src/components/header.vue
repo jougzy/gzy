@@ -13,7 +13,7 @@
     </div>
     <div class="nav">
         <ul> 
-            <li class="nav_0"><i class="zt"></i>地区分析</li>
+            <li class="nav_0" id="area_nav"><i class="zt"></i>地区分析</li>
             <li class="nav_0"><i class="nav_8"></i>帮助  </li>
             <li class="nav_0"><i class="nav_4"></i>更多  </li>
         </ul>
