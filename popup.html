@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfoBox Detector</title>
+    <style>
+        /* 样式化结果 */
+        #infoContainer {
+            max-height: 300px;
+            width: 400px; /* 添加宽度属性 */
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        .infoRow {
+            display: flex; /* 使用 flex 布局 */
+            align-items: center; /* 垂直居中对齐 */
+            margin-bottom: 5px;
+        }
+        .infoLabel {
+            font-weight: bold; /* 加粗 */
+            margin-right: 5px; /* 右边距 */
+        }
+    </style>
+</head>
+<body>
+    <h1>InfoBox Detector</h1>
+    <button id="detectButton">Detect InfoBox</button>
+    <div id="infoContainer"></div>
+    <script src="popup.js"></script>
+</body>
+</html>
