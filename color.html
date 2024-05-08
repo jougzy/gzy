@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>左右对比条柱图</title>
+<!-- 引入 ECharts -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>
+</head>
+<body>
+
+<div id="left" style="width: 400px; height: 400px; float: left;"></div>
+<div id="right" style="width: 400px; height: 400px; float: left;"></div>
+
+<script>
+    // 初始化左侧 ECharts 实例
+    var leftChart = echarts.init(document.getElementById('left'));
+
+    // 左侧图表的数据
+    var leftData = 12000;
+
+    // 初始化右侧 ECharts 实例
+    var rightChart = echarts.init(document.getElementById('right'));
+
+    // 右侧图表的数据
+    var rightData = 20000;
+
+    // 计算左右两侧数据之和作为最大值
+    var maxData = leftData + rightData;
+
+    // 左侧图表的配置项和数据
+    var leftOption = {
+        xAxis: {
+            type: 'value',
+            inverse: true,
+            min: 0,
+            max: maxData,
+            axisLine: {
+                show: false
+            }
+        },
+        yAxis: {
+            type: 'category',
+            axisLine: {
+                show: false
+            }
+        },
+        tooltip: {
+            show: true,
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        series: [
+            {
+                name: '左侧',
+                type: 'bar',
+                data: [leftData],
+                barWidth: '30%', // 调整柱子宽度为30%
+                itemStyle: {
+                    borderRadius: [10, 0, 0, 10],
+                    color: '#02D2C5'
+                },
+                label: {
+                    show: true,
+                    position: 'inside',
+                    color: '#fff',
+                    formatter: function(params) {
+                        return params.value;
+                    }
+                }
+            }
+        ]
+    };
+
+    // 使用刚指定的配置项和数据显示左侧图表
+    leftChart.setOption(leftOption);
+
+    // 右侧图表的配置项和数据
+    var rightOption = {
+        xAxis: {
+            type: 'value',
+            min: 0,
+            max: maxData,
+            axisLine: {
+                show: false
+            }
+        },
+        yAxis: {
+            type: 'category',
+            axisLine: {
+                show: false
+            }
+        },
+        tooltip: {
+            show: true,
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        series: [
+            {
+                name: '右侧',
+                type: 'bar',
+                data: [rightData],
+                barWidth: '30%', // 调整柱子宽度为30%
+                itemStyle: {
+                    borderRadius: [0, 10, 10, 0],
+                    color: '#40B1F1'
+                },
+                label: {
+                    show: true,
+                    position: 'inside',
+                    color: '#fff',
+                    formatter: function(params) {
+                        return params.value;
+                    }
+                }
+            }
+        ]
+    };
+
+    // 使用刚指定的配置项和数据显示右侧图表
+    rightChart.setOption(rightOption);
+</script>
+
+</body>
+</html>
